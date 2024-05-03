@@ -5,6 +5,9 @@ __pycache__/
 
 # C extensions
 *.so
+# txt extensions
+requirements.txt
+LICENSE
 
 # Distribution / packaging
 .Python
