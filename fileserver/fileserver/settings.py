@@ -105,6 +105,9 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTHENTICATION_BACKENDS =[
     'django.contrib.auth.backends.ModelBackend'
 ]
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+]
 
 
 # Internationalization

@@ -2,6 +2,8 @@ from django import forms
 from .models import All_Users
 from django.core.validators import RegexValidator
 import re
+from django.contrib.auth.hashers import make_password
+
 
 
 class SignupForm(forms.ModelForm):
@@ -50,7 +52,7 @@ class SignupForm(forms.ModelForm):
         return cleaned_data
     def save(self,commit=True):
         user = super().save(commit=False)
-        user.password = self.cleaned_data.get('password')
+        user.password = make_password(self.cleaned_data.get('password'))
         user.firstName = self.cleaned_data.get('firstName').lower()
         user.lastName = self.cleaned_data.get('lastName').lower()
         user.email    = self.cleaned_data.get('email').lower()
