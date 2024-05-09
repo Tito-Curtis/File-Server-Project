@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
          user= self.create_user(firstName=firstName,lastName=lastName,email=email,password=password)
          user.is_superuser = True
          user.is_admin = True
-         user.staff = True
+         user.is_staff = True
          user.save(using=self._db)
 
          return user
@@ -32,7 +32,7 @@ class All_Users(AbstractBaseUser):
     firstName = models.CharField(max_length=50,null=False)
     lastName = models.CharField(max_length=50,null=False)
     email = models.EmailField(max_length=120,unique=True,null=False)
-    password = models.CharField(max_length=50,null=False)
+    password = models.CharField(max_length=300,null=False)
     date_created = models.DateField(auto_now_add=True)
     last_login = models.DateField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -44,7 +44,7 @@ class All_Users(AbstractBaseUser):
 
     REQUIRED_FIELDS = ['firstName','lastName']
 
-    objects='UserManager'
+    objects=UserManager()
 
     class Meta:
         verbose_name_plural = 'All Users'
