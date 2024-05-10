@@ -29,9 +29,16 @@
                 <a class="nav-link active" aria-current="page">Contact Us</a>
               </li>
             </ul>
-            <form class="d-flex ms-auto" role="search">
-                <a class="btn btn-outline-success ms-2" href="#">Login</a>
-            </form>         
+            {% if user.is_authenticated%}
+            <form action="{% url 'logout' %}" method="POST">
+              <label for="">Welcome {{user.firstName}}  </label>
+              {% csrf_token %}
+              <input type="submit" value="Logout" class="btn btn-outline-success ms-2">
+            </form>
+
+            {% else %}
+                <a class="btn btn-outline-success ms-2" href="{% url 'login' %}">Login</a>
+            {% endif %}         
           </div>
         </div>
       </nav>

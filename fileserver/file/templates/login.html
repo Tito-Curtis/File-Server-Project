@@ -8,6 +8,8 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Login</button>
+    <p><a href="#">forget password</a></p>
+    <p>Don't have account yet? <a href="{% url 'signup' %}">signUp</a></p>
   </form>
  
 {% endblock %}

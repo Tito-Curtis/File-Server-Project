@@ -13,14 +13,17 @@ class SignupForm(forms.ModelForm):
         fields = ['firstName', 'lastName','email', 'password','confirm_password']
         widgets = {
             'password': forms.PasswordInput(),
-            'confirm_password': forms.PasswordInput(),
-            },
+            'confirm_password': forms.PasswordInput()
+            }
         labels = {
             'firstName': 'First Name',
             'lastName': 'Last Name',
             'email': 'Email',
             'password': 'Password',
-            'confirm_password': 'Confirm Password',}
+            'confirm_password': 'Confirm Password'}
+        
+
+        
     
     def clean(self):
         cleaned_data = super().clean()
