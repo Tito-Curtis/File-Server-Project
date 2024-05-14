@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title%}500 error{% endblock%}
+   {% block content %}
+
+
+<div class="jumbotron">
+    <h1 class="display-4">Internal Server Error</h1>
+    <p class="lead">Server might be down, please try later.</p>
+    <hr class="my-4">
+    <a class="btn btn-primary btn-lg" href="{% url 'index' %}" role="button">Home</a>
+  </div>
+
+{%endblock%}
+

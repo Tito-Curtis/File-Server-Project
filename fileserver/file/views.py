@@ -37,3 +37,9 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+def error_404_view(request,exception=None):
+    return render(request, '404.html',status=404)
+
+def error_500_view(request,exception=None):
+    return render(request, '500.html',status=500)
