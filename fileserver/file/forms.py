@@ -3,27 +3,43 @@ from .models import All_Users
 from django.core.validators import RegexValidator
 import re
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.tokens import default_token_generator
 
+def validate_password_complexity(password):
+            specialChar= "!@#$%^&*()-_=+[{]}:|;'<,>.?/\\`~"  
+            password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*['+re.escape(specialChar)+r'])[A-Za-z\d'+ re.escape(specialChar)+r']+$'
+            if len(password) < 8:
+                raise forms.ValidationError("Password must be at least 8 characters long")
+            
+            
+            validator = RegexValidator(
+            regex=password_pattern,
+            message="Password must contain alphanumeric with atleast 1 special character and 1 uppercase.",
+            code="invalid_password")
 
+            validator(password)
+            return password
 
 class SignupForm(forms.ModelForm):
-    confirm_password = forms.CharField()
+    confirm_password = forms.CharField(widget= forms.PasswordInput(attrs={'class': 'form-control'}))
     class Meta:
         model = All_Users
         fields = ['firstName', 'lastName','email', 'password','confirm_password']
         widgets = {
-            'password': forms.PasswordInput(),
-            'confirm_password': forms.PasswordInput()
-            }
+            'firstName': forms.TextInput(attrs={'class': 'form-control'}),
+            'lastName': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control'}),
+            
+        }
         labels = {
             'firstName': 'First Name',
             'lastName': 'Last Name',
             'email': 'Email',
             'password': 'Password',
             'confirm_password': 'Confirm Password'}
-        
-
-        
     
     def clean(self):
         cleaned_data = super().clean()
@@ -35,23 +51,7 @@ class SignupForm(forms.ModelForm):
             raise forms.ValidationError("Email already used")
         if password != confirm_password:
             raise forms.ValidationError("Passwords do not match")
-        
-        specialChar= "!@#$%^&*()-_=+[{]}:|;'<,>.?/\\`~"  #p
-        password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*['+re.escape(specialChar)+r'])[A-Za-z\d'+ re.escape(specialChar)+r']+$'
-
-        #password_pattern = r"[a-zA-Z0-9\s" + re.escape(specialCharacters) + r"]+"
-        if len(password) < 6:
-            raise forms.ValidationError("Password must be at least 6 characters long")
-        
-        
-        validator = RegexValidator(
-        regex=password_pattern,
-        message="Password must contain at least one special character, digit and both case letters",
-        code="invalid_password")
-
-        validator(password)
-        
-            
+        validate_password_complexity(password)        
         return cleaned_data
     def save(self,commit=True):
         user = super().save(commit=False)
@@ -64,8 +64,28 @@ class SignupForm(forms.ModelForm):
             user.save()
         return user
 class LoginForm(forms.Form):
-    email = forms.EmailField(label='email',max_length=100)
-    password = forms.CharField(label='password',widget=forms.PasswordInput())
+    email = forms.EmailField(label='email',max_length=100,widget=forms.TextInput(attrs={'class': 'form-control','placeholder':'you@example.com'}))
+    password = forms.CharField(label='password',widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder':'password'}))
 
+class CustomSetPasswordsForm(SetPasswordForm):
+    new_password1 = forms.CharField(label='New password',widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder':'Enter a new password'}))
+    new_password2 = forms.CharField(label='Confirm New password',widget=forms.PasswordInput(attrs={'class': 'form-control','placeholder':'Confirm your new password '})) 
 
+    error_message = {
+        'password_mismatch': "Passwords do not match."
+    }
+    def clean_new_password2(self):
+        password1 = self.cleaned_data.get('new_password1')
+        password2 = self.cleaned_data.get('new_password2')
+        if password1 and password2:
+            if password1 != password2:
+                raise forms.ValidationError(
+                    self.error_message['password_mismatch'],
+                    code='password_mismatch',
+                )
+        validate_password_complexity(password1)
+        validate_password(password1, self.user)
+        return password1
         
+class CustomPasswordResetForm(PasswordResetForm):
+     email = forms.EmailField(label='email',max_length=100,widget=forms.TextInput(attrs={'class': 'form-control'}))

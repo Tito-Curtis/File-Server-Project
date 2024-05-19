@@ -33,11 +33,11 @@
             <form action="{% url 'logout' %}" method="POST">
               <label for="">Welcome {{user.firstName}}  </label>
               {% csrf_token %}
-              <input type="submit" value="Logout" class="btn btn-outline-success ms-2">
+              <input type="submit" value="Logout" class="btn btn-primary">
             </form>
 
             {% else %}
-                <a class="btn btn-outline-success ms-2" href="{% url 'login' %}">Login</a>
+            <a href="{% url 'login' %}"><input type="submit" value="Login" class="btn btn-primary"></a>
             {% endif %}         
           </div>
         </div>
