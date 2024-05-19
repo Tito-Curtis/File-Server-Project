@@ -1,10 +1,11 @@
-{% extends 'base.html' %}
-{%block title%}reset password{% endblock %}
+{% extends 'bootstrap_link.html' %}
+{% block title%}reset password complete{% endblock %}
 {% block content %}
-<h2>Password reset complete</h2>
-<p>Your password has been set. You may go on to login</p>
-
-<h3><a href="{% url 'login'%}">login</a></h3>
-
-
-{%endblock%}
+<div class="container d-flex justify-content-center align-items-center vh-100"> <div class="card text-center shadow-sm"> <div class="card-body">
+    <h1><strong>Password Updated!</strong></h1>
+    
+    <p>Your password has been updated successfully</p>
+    <br>
+    <button class="btn  btn-custom"><a href="{% url 'login' %}">login</a></button>
+</div>
+{% endblock %}

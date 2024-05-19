@@ -18,23 +18,23 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include,handler400,handler403,handler404,handler500
 
-from file import urls,views
+from file import urls
 from django.contrib.auth import views as auth_views
+from file.views import CustomPasswordResetConfirmView,CustomPasswordResetView,error_404_view,error_500_view
+from file.forms import CustomSetPasswordsForm   
 
-
-urlpatterns = [                                             # 
+urlpatterns = [                                             
     path('admin/', admin.site.urls),
     path('', include(urls)),
-    path('reset_password/',auth_views.PasswordResetView.as_view(template_name='reset_password.html'),
+    path('reset_password/',CustomPasswordResetView.as_view(),
         name='reset_password'),
     path('reset_password_sent/',auth_views.PasswordResetDoneView.as_view(template_name='reset_password_done.html'),
          name='password_reset_done'),
-    path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(template_name='reset_password_confirm.html'),
+    path('reset/<uidb64>/<token>/',CustomPasswordResetConfirmView.as_view(),
           name='password_reset_confirm'),
-
     path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(template_name='reset_pass_complete.html'), 
          name='password_reset_complete'),
 ]
 
-handler404 = views.error_404_view
-handler500 = views.error_500_view
+handler404 = error_404_view
+handler500 = error_500_view
