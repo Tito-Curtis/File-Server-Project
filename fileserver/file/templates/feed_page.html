@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Feed Page{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid justify-content-center">
+            <form action="" class="d-flex" role="search">
+                <input class="form-control me-2" type="text" name="query" placeholder="Search" aria-label="Search">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+<br>
+    
+    <div class="container">
+        <div class="row">
+            {% for document in documents %}
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ document.title }}</h5>
+                        <p class="card-title">{{ document.file.url | filename}}</p>
+                        <p class="card-text">Category : {{ document.category }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <div><a href="{% url 'view_documents' document.id %}">View</a></div>
+                        <div><a href="{% url 'download_document' document.id %}" >Download</a></div>
+                        <div><a href="{% url 'send_email' document.id %}?document_name={{ document.file.url }}">Send To Email</a></div>
+                        
+                    </div>
+                    {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                    {% endif %}
+                </div>                         
+            </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+    
+{% else %}
+    <div>
+        <p><h3>You are not logged in, </h3></p>
+        <p><a class="" href="{% url 'login' %}" role="">login</a> to see your document</p>
+    </div>
+{% endif %}
+
+{% endblock %}

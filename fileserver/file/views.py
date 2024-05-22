@@ -1,24 +1,15 @@
-from typing import Any
 from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
-from django.shortcuts import render, redirect
-from .forms import SignupForm, LoginForm, CustomSetPasswordsForm,CustomPasswordResetForm
+from django.shortcuts import get_object_or_404, render, redirect
+from .forms import (SignupForm, LoginForm, CustomSetPasswordsForm,
+                    CustomPasswordResetForm,SendEmailForm)
 from django.contrib.auth import authenticate, login, logout
-from .models import All_Users
+from .models import All_Users,Document,DocumentCategory
 from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView
-from django.utils.encoding import force_str
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import get_user_model
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
-from django.views.decorators.debug import sensitive_post_parameters
+from django.core.mail import EmailMessage
+import os
 
-
-# Create your views here.
-INTERNAL_RESET_SESSION_TOKEN =  "_password_reset_token"
-
-User = get_user_model()
 def index(request):
     return render(request, 'index.html')
 
@@ -65,3 +56,56 @@ class CustomPasswordResetView(PasswordResetView):
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     form_class = CustomSetPasswordsForm
     template_name='reset_password_confirm.html'
+
+
+def feed_page_view(request):
+    if request.user.is_authenticated:
+        user = request.user
+        documents = Document.objects.filter(assigned_user = user)
+        return render(request, 'feed_page.html', {'documents': documents})
+    else:
+        return render(request, 'feed_page.html')
+
+def download_document_view(request,document_id):
+    document = get_object_or_404(Document, pk=document_id)
+    document.increment_download_count()  
+    return redirect(document.file.url)
+
+def send_email_view(request,document_id):
+    document_name = request.GET.get('document_name','')
+    if request.method == 'POST':
+        form = SendEmailForm(request.POST,request.FILES)
+        document = Document.objects.get(id=document_id)  
+
+        if form.is_valid():
+            user_email = request.user.email 
+            print(user_email)
+            subject = form.cleaned_data['subject']
+            recipient_email = form.cleaned_data['recipient_email']
+            message = form.cleaned_data['message']
+            file_name = os.path.basename(document.file.name)
+            
+            email =  EmailMessage(subject,message,from_email=user_email,to=[recipient_email])
+            email.attach(file_name,document.file.read())
+            try:
+                email.send()
+                document.increment_email_count()
+                return HttpResponse('email sent successfully')
+            except:
+                return render(request,'500.html')
+    else:
+        form = SendEmailForm()
+        context={
+            'form': form,
+            'document_name':document_name
+        }
+        return render(request,'send_email.html',context)
+    
+def view_documents(request,document_id):
+    document = Document.objects.get(id=document_id)
+    with open(document.file.path, 'rb') as file:
+        response = HttpResponse(file.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename={}'.format(os.path.basename(document.file.name))
+        return response
+
+    
