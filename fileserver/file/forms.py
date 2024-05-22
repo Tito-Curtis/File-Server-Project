@@ -1,26 +1,11 @@
 from django import forms
 from .models import All_Users
-from django.core.validators import RegexValidator
-import re
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth.tokens import default_token_generator
+from .validations import password_validations
 
-def validate_password_complexity(password):
-            specialChar= "!@#$%^&*()-_=+[{]}:|;'<,>.?/\\`~"  
-            password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*['+re.escape(specialChar)+r'])[A-Za-z\d'+ re.escape(specialChar)+r']+$'
-            if len(password) < 8:
-                raise forms.ValidationError("Password must be at least 8 characters long")
-            
-            
-            validator = RegexValidator(
-            regex=password_pattern,
-            message="Password must contain alphanumeric with atleast 1 special character and 1 uppercase.",
-            code="invalid_password")
 
-            validator(password)
-            return password
 
 class SignupForm(forms.ModelForm):
     confirm_password = forms.CharField(widget= forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -51,7 +36,7 @@ class SignupForm(forms.ModelForm):
             raise forms.ValidationError("Email already used")
         if password != confirm_password:
             raise forms.ValidationError("Passwords do not match")
-        validate_password_complexity(password)        
+        password_validations(password)        
         return cleaned_data
     def save(self,commit=True):
         user = super().save(commit=False)
@@ -83,9 +68,14 @@ class CustomSetPasswordsForm(SetPasswordForm):
                     self.error_message['password_mismatch'],
                     code='password_mismatch',
                 )
-        validate_password_complexity(password1)
+        password_validations(password1)
         validate_password(password1, self.user)
         return password1
         
 class CustomPasswordResetForm(PasswordResetForm):
      email = forms.EmailField(label='email',max_length=100,widget=forms.TextInput(attrs={'class': 'form-control'}))
+    
+class SendEmailForm(forms.Form):
+    subject = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'class': 'form-control'}))
+    recipient_email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))

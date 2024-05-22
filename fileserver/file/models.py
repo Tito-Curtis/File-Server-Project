@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
-
+from .validations import document_file_validation
 # Create your models here.
 class UserManager(BaseUserManager):
      def create_user(self,firstName,lastName,email,password=None):
@@ -57,3 +57,32 @@ class All_Users(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
     
+
+class DocumentCategory(models.Model):
+    category_name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.category_name
+    class Meta:
+        verbose_name_plural = 'Document Categories'
+
+
+class Document(models.Model):
+    title          = models.CharField(max_length=100)
+    description    = models.TextField()
+    file           = models.FileField(upload_to='file/documents/',validators=[document_file_validation])
+    uploaded_at    = models.DateTimeField(auto_now_add=True)
+    download_count = models.PositiveIntegerField(default=0)
+    email_count    = models.PositiveIntegerField(default=0)
+    category       = models.ForeignKey(DocumentCategory,on_delete=models.CASCADE)
+    assigned_user  = models.ManyToManyField('All_Users', related_name='assigned_to_users')
+
+    def increment_download_count(self):
+        self.download_count += 1
+        self.save()
+    def increment_email_count(self):
+        self.email_count += 1
+        self.save()
+    def __str__(self):
+        return self.title
+    class Meta:
+        verbose_name_plural = 'Documents'
