@@ -21,5 +21,5 @@ def document_file_validation(file):
         ext = os.path.splitext(file.name)[1]
         valid_extensions = '.pdf'
         if ext != valid_extensions:
-            raise forms.ValidationError('Unsupported file extension, file format should be .pdf')
+            raise forms.ValidationError('Unsupported file extension. File format should be .pdf')
         
