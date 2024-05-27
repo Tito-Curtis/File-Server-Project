@@ -2,9 +2,9 @@ from django.http import HttpRequest
 from django.http.response import HttpResponse as HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from .forms import (SignupForm, LoginForm, CustomSetPasswordsForm,
-                    CustomPasswordResetForm,SendEmailForm)
+                    CustomPasswordResetForm,SendEmailForm,ContactAdminForm)
 from django.contrib.auth import authenticate, login, logout
-from .models import All_Users,Document,DocumentCategory
+from .models import Document
 from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetView
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage
@@ -152,7 +152,6 @@ def filter_category_view(request):
         return render(request, 'feed_page.html')
 
 def search_document_view(request):
-    print('searching')
     user = request.user
     documents = Document.objects.filter(assigned_user = user)
     category_document = documents
@@ -169,3 +168,15 @@ def search_document_view(request):
             return render(request, 'feed_page.html', context)
         
     return render(request, 'feed_page.html', context)
+
+def contact_admin_view(request):
+    if request.method == 'POST':
+        form = ContactAdminForm(request.POST)
+        if form.is_valid():
+            form.instance.user = request.user
+            form.save()
+            return HttpResponse('message successfully sent to admin')
+    else:
+        form = ContactAdminForm()
+    return render(request, 'send_email.html',{'form':form})
+

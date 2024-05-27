@@ -47,7 +47,8 @@ class All_Users(AbstractBaseUser):
     objects=UserManager()
 
     class Meta:
-        verbose_name_plural = 'All Users'
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
 
     def __str__(self):
         return f'{self.firstName} {self.lastName}'
@@ -63,6 +64,7 @@ class DocumentCategory(models.Model):
     def __str__(self):
         return self.category_name
     class Meta:
+        verbose_name = 'Category'
         verbose_name_plural = 'Document Categories'
 
 
@@ -85,4 +87,16 @@ class Document(models.Model):
     def __str__(self):
         return self.title
     class Meta:
+        verbose_name = 'Document'
         verbose_name_plural = 'Documents'
+class ContactAdmin(models.Model):
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    user = models.ForeignKey(All_Users, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Message'
+        verbose_name_plural = 'Admin Messages'
+    def __str__(self):
+        return f'{self.user.firstName} {self.user.lastName}' 

@@ -1,5 +1,5 @@
 from django import forms
-from .models import All_Users
+from .models import All_Users,ContactAdmin
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
 from django.contrib.auth.password_validation import validate_password
@@ -79,3 +79,13 @@ class SendEmailForm(forms.Form):
     subject = forms.CharField(max_length=100,widget=forms.TextInput(attrs={'class': 'form-control'}))
     recipient_email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     message = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+class ContactAdminForm(forms.ModelForm):
+    class Meta:
+        model = ContactAdmin
+        fields = ['title','message']
+
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'message': forms.Textarea(attrs={'class': 'form-control'}),
+        }
