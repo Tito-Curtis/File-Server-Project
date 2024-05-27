@@ -26,7 +26,7 @@
                 <a class="nav-link active" aria-current="page">About Us</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page">Contact Us</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'contact_admin' %}">Contact Us</a>
               </li>
             </ul>
             {% if user.is_authenticated%}

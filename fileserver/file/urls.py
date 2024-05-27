@@ -12,4 +12,5 @@ urlpatterns = [
     path('view/<int:document_id>',views.view_documents,name='view_documents'),
     path('filter/',views.filter_category_view,name='filter_document'),
     path('search/',views.search_document_view,name='search'),
+    path('contact_admin/',views.contact_admin_view,name='contact_admin'),
 ]

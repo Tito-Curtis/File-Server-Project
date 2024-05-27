@@ -6,13 +6,21 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
+            {% if document_name %}
             <h2>Send Email</h2>
+            {% else %}
+            <h2>Contact Us</h2>
+            {% endif %}
             <form method="post">
 
                 {% csrf_token %}
                 {{form.as_p}}
-                <h4>Selected Document: {{document_name|filename}}</h4>
+                {% if document_name %}
+                <p><h5>Selected Document: <strong>{{document_name|filename}}</strong></h5></p>
                 <button type="submit" class="btn btn-primary">Send Mail</button>
+                {% else%}
+                <button type="submit" class="btn btn-primary">Send Message</button>
+                {% endif %}
             </form>
         </div>
     </div>
