@@ -19,11 +19,11 @@ class UserDashboard(admin.ModelAdmin):
     
 class DocumentDashboard(admin.ModelAdmin):
     list_display = ('title','category','email_sent','download_times','users_length')
-
     readonly_fields = ['email_count','download_count']
     filter_horizontal = ['assigned_user']
-    search_fields = ('title',)
-    list_filter = ('category',)
+    search_fields = ['title']
+   
+    
     
     def email_sent(self,rec):
         return rec.email_count
@@ -53,6 +53,7 @@ class ContactAdminDashboard(admin.ModelAdmin):
 class DocumentCategoryDashboard(admin.ModelAdmin):
     list_display = ('id', 'category_name' )
     list_display_links = ('id', 'category_name')
+    search_fields = ['category_name']
 
 
 

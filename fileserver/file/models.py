@@ -69,7 +69,7 @@ class DocumentCategory(models.Model):
 
 
 class Document(models.Model):
-    title          = models.CharField(max_length=100)
+    title          = models.CharField(max_length=100,unique=True)
     description    = models.TextField()
     file           = models.FileField(upload_to='file/documents/',validators=[document_file_validation])
     uploaded_at    = models.DateTimeField(auto_now_add=True)
