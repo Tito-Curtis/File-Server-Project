@@ -36,6 +36,10 @@
 
 [https://lizzy-files.onrender.com](https://lizzy-files.onrender.com)
 
+## Admin Logins
++ email - **admin@gmail.com**
++ password - **@Admin123**
+
 ## Contribution
 #### Contributions are welcome! If you have any suggestions or improvements, please feel free to open an issue or submit a pull request.
 
