@@ -9,6 +9,7 @@
 + Feed page that contains a list of .pdf files that can be viewed and downloaded.
 + Search and filter the file server
 + Sending a file to an email through the platform
++ Contact administrator incase of problem
 ### **Admin** 
 + Upload files with a title and description
 + Be able to see the number of downloads and number of emails sent for each file
