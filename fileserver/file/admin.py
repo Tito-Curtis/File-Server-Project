@@ -1,5 +1,9 @@
 from django.contrib import admin
 from .models import All_Users, Document, DocumentCategory,ContactAdmin
+from django.contrib import messages
+
+
+
 
 # Register your models here.
 
@@ -22,9 +26,7 @@ class DocumentDashboard(admin.ModelAdmin):
     readonly_fields = ['email_count','download_count']
     filter_horizontal = ['assigned_user']
     search_fields = ['title']
-   
-    
-    
+        
     def email_sent(self,rec):
         return rec.email_count
     email_sent.short_description = 'Email Sent'

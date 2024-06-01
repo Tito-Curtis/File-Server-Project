@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 from .validations import document_file_validation
+from django.core.exceptions import ValidationError
+
 # Create your models here.
 class UserManager(BaseUserManager):
      def create_user(self,firstName,lastName,email,password=None):
@@ -69,7 +71,7 @@ class DocumentCategory(models.Model):
 
 
 class Document(models.Model):
-    title          = models.CharField(max_length=100,unique=True)
+    title          = models.CharField(max_length=100)
     description    = models.TextField()
     file           = models.FileField(upload_to='file/documents/',validators=[document_file_validation])
     uploaded_at    = models.DateTimeField(auto_now_add=True)
@@ -84,11 +86,14 @@ class Document(models.Model):
     def increment_email_count(self):
         self.email_count += 1
         self.save()
+    
+   
     def __str__(self):
         return self.title
     class Meta:
         verbose_name = 'Document'
         verbose_name_plural = 'Documents'
+          
 class ContactAdmin(models.Model):
     title = models.CharField(max_length=255)
     message = models.TextField()
