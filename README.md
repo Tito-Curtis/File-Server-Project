@@ -38,6 +38,7 @@
 [https://lizzy-files.onrender.com](https://lizzy-files.onrender.com)
 
 ## Admin Logins
+[https://lizzy-files.onrender.com](https://lizzy-files.onrender.com/admin)
 + email - **admin@gmail.com**
 + password - **@Admin123**
 
