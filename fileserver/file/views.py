@@ -122,10 +122,13 @@ def send_email_view(request,document_id):
     
 def view_documents(request,document_id):
     document = Document.objects.get(id=document_id)
-    with open(document.file.path, 'rb') as file:
-        response = HttpResponse(file.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline; filename={}'.format(os.path.basename(document.file.name))
-        return response
+    try:
+        with open(document.file.path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'inline; filename={}'.format(os.path.basename(document.file.name))
+            return response
+    except:
+        return render(request,'404.html')
 
 def filter_category_view(request):
     user = request.user
